@@ -11,6 +11,7 @@ class Post {
   });
 
   factory Post.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) {
+<<<<<<< HEAD
     final map = snapshot.data()!; // data() の中には Map 型のデータが入っています。
     // data()! この ! 記号は nullable な型を non-nullable として扱うよ！ という意味です。
     // data の中身はかならず入っているだろうという仮説のもと ! をつけています。
@@ -25,6 +26,19 @@ class Post {
           snapshot.reference, // 注意。reference は map ではなく snapshot に入っています。
     );
   }
+=======
+    final map = snapshot.data()!;
+    return Post(
+        text: map['text'],
+        createdAt: map['createdAt'],
+        posterName: map['posterName'],
+        posterImageUrl: map['posterImageUrl'],
+        posterId: map['postId'],
+        //referenceはmapではなくsnapshot.
+        reference: snapshot.reference);
+  }
+
+>>>>>>> refs/remotes/origin/main
   Map<String, dynamic> toMap() {
     return {
       'text': text,
@@ -37,6 +51,10 @@ class Post {
     };
   }
 
+<<<<<<< HEAD
+=======
+//プロパティ
+>>>>>>> refs/remotes/origin/main
   /// 投稿文
   final String text;
 
