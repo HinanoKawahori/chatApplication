@@ -10,6 +10,31 @@ class Post {
     required this.posterId,
     required this.reference,
   });
+
+  factory Post.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) {
+    final map = snapshot.data()!;
+    return Post(
+        text: map['text'],
+        createdAt: map['createdAt'],
+        posterName: map['posterName'],
+        posterImageUrl: map['posterImageUrl'],
+        posterId: map['postId'],
+        //referenceはmapではなくsnapshot.
+        reference: snapshot.reference);
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'text': text,
+      'createdAt': createdAt,
+      'posterName': posterName,
+      'posterImageUrl': posterImageUrl,
+      'posterId': posterId,
+      // 'reference': reference, reference は field に含めなくてよい
+      // field に含めなくても DocumentSnapshot に reference が存在するため
+    };
+  }
+
 //プロパティ
   /// 投稿文
   final String text;
@@ -28,12 +53,4 @@ class Post {
 
   /// Firestoreのどこにデータが存在するかを表すpath情報
   final DocumentReference reference;
-
-  // factory PixabayImage.fromMap(Map<String, dynamic> map) {
-  //   return PixabayImage(
-  //     previewURL: map['previewURL'],
-  //     likes: map['likes'],
-  //     webformatURL: map['webformatURL'],
-  //   );
-  // }
 }

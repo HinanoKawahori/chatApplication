@@ -1,3 +1,4 @@
+import 'package:chatapplication/chat_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -38,6 +39,16 @@ class _SignInPageState extends State<SignInPage> {
             await signInWithGoogle();
             // ログインが成功すると FirebaseAuth.instance.currentUser にログイン中のユーザーの情報が入ります
             print(FirebaseAuth.instance.currentUser?.displayName);
+            //(mounted)
+            if (mounted) {
+              //elementがnullでない場合
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) {
+                  return const ChatPage();
+                }),
+                (route) => false,
+              );
+            }
           },
         ),
       ),
