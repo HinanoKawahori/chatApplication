@@ -1,6 +1,8 @@
+import 'package:chatapplication/chat_page.dart';
 import 'package:chatapplication/post.dart';
 import 'package:chatapplication/sign_in_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +23,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(),
-      home: const SignInPage(),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SizedBox();
+          }
+          if (snapshot.hasData) {
+            // User が null でなない、つまりサインイン済みのホーム画面へ
+            return ChatPage();
+          }
+          // User が null である、つまり未サインインのサインイン画面へ
+          return SignInPage();
+        },
+      ),
     );
   }
 }
