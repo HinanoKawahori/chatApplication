@@ -109,7 +109,6 @@ class _SignInPageState extends State<SignInPage> {
               //obscureText: true,
               //TODO 質問validatorの位置は関係ある？ ボタンを押した時に初めてvalueを認知する？
               //②：バリデーションの処理を持たせたTextFormField Widgetを用意する
-
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter some text';
