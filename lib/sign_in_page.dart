@@ -36,6 +36,7 @@ class _SignInPageState extends State<SignInPage> {
     }
   }
 
+//ログイン
   Future<void> _signIn(String id, String pass) async {
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -121,7 +122,7 @@ class _SignInPageState extends State<SignInPage> {
               child: ElevatedButton(
                 onPressed: () {
                   /// ログインの場合
-                  /// idController.text, passController.textが入る。stringだから
+                  ///3 idController.text, passController.textが入る。stringだから
                   _signIn(idController.text, passController.text);
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -141,7 +142,7 @@ class _SignInPageState extends State<SignInPage> {
               child: ElevatedButton(
                 onPressed: () {
                   /// アカウント作成の場合
-                  ///
+                  ///3 createAccount
                   _createAccount(idController.text, passController.text);
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -152,6 +153,8 @@ class _SignInPageState extends State<SignInPage> {
                 child: const Text('アカウント作成'),
               ),
             ),
+
+            // }
           ]),
         ),
       ),

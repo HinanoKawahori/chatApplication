@@ -1,3 +1,4 @@
+import 'package:chatapplication/modifyprofile_page.dart';
 import 'package:chatapplication/post.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,6 +19,15 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('チャット'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  // （2） 実際に表示するページ(ウィジェット)を指定する
+                  builder: (context) => ModifyProfilePage()));
+        },
       ),
       body: Column(
         children: [
