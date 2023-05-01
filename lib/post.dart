@@ -1,6 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+//TODO 確認
+//設計図ポスト
 class Post {
+  //プロパティ
+  final String text;
+  final Timestamp createdAt;
+  final String posterName;
+  final String posterImageUrl;
+  final String posterId;
+  final DocumentReference reference;
+  //コンストラクタ
   Post({
     required this.text,
     required this.createdAt,
@@ -10,66 +20,36 @@ class Post {
     required this.reference,
   });
 
+//インスタンスの生成
+//firebaseからpost型
+//因数としてfirestoreのマップ型documentsnapshotを受け取り、Postのインスタンスを作る。
   factory Post.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) {
-<<<<<<< HEAD
-    final map = snapshot.data()!; // data() の中には Map 型のデータが入っています。
-    // data()! この ! 記号は nullable な型を non-nullable として扱うよ！ という意味です。
-    // data の中身はかならず入っているだろうという仮説のもと ! をつけています。
-    // map データが得られているのでここからはいつもと同じです。
+    //map = data{key, value}
+    // documensSnapshot からmapに変換
+    final map = snapshot.data()!;
     return Post(
+      //map型のデータが得られる。
+      //ex)text : map['text']  textにmap['text']を代入！
       text: map['text'],
       createdAt: map['createdAt'],
       posterName: map['posterName'],
       posterImageUrl: map['posterImageUrl'],
       posterId: map['posterId'],
-      reference:
-          snapshot.reference, // 注意。reference は map ではなく snapshot に入っています。
+      reference: snapshot.reference,
     );
   }
-=======
-    final map = snapshot.data()!;
-    return Post(
-        text: map['text'],
-        createdAt: map['createdAt'],
-        posterName: map['posterName'],
-        posterImageUrl: map['posterImageUrl'],
-        posterId: map['postId'],
-        //referenceはmapではなくsnapshot.
-        reference: snapshot.reference);
-  }
 
->>>>>>> refs/remotes/origin/main
+
+//post型からfirebase
+//PostインスタンスからMap<String, dynamic>に変換するためのtoMap関数。
   Map<String, dynamic> toMap() {
     return {
+      //プロパティ名＝key名、 Firestore にデータを保存するときに活躍
       'text': text,
       'createdAt': createdAt,
       'posterName': posterName,
       'posterImageUrl': posterImageUrl,
       'posterId': posterId,
-      // 'reference': reference, reference は field に含めなくてよい
-      // field に含めなくても DocumentSnapshot に reference が存在するため
     };
   }
-
-<<<<<<< HEAD
-=======
-//プロパティ
->>>>>>> refs/remotes/origin/main
-  /// 投稿文
-  final String text;
-
-  /// 投稿日時
-  final Timestamp createdAt;
-
-  /// 投稿者の名前
-  final String posterName;
-
-  /// 投稿者のアイコン画像URL
-  final String posterImageUrl;
-
-  /// 投稿者のユーザーID
-  final String posterId;
-
-  /// Firestoreのどこにデータが存在するかを表すpath情報
-  final DocumentReference reference;
 }

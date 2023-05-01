@@ -34,7 +34,7 @@ final postsReference =
     // 第二引数は使わないのでその場合は _ で不使用であることを分かりやすくしています。
     return Post.fromFirestore(snapshot); // 先ほど定期着した fromFirestore がここで活躍します。
   }),
-  toFirestore: ((value, _) {
-    return value.toMap(); // 先ほど適宜した toMap がここで活躍します。
+  toFirestore: ((Post postData, _) {
+    return postData.toMap(); // 先ほど適宜した toMap がここで活躍します。
   }),
 );

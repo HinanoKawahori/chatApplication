@@ -19,7 +19,6 @@ class _ChatPageState extends State<ChatPage> {
       appBar: AppBar(
         title: const Text('チャット'),
       ),
-<<<<<<< HEAD
       body: Column(
         children: [
           //child1, streambuilder
@@ -53,8 +52,9 @@ class _ChatPageState extends State<ChatPage> {
               final posterImageUrl = user.photoURL!; // Googleアカウントのアイコンデータがとれます
 
               //２、ランダムなpostIdのドキュメントリファレンスを作成。
+              //(doc();)で作れる。
               final newDocumentReference = postsReference.doc();
-              //因数を定義。mapclassの形。
+              //postクラス型からできるnewPostインスタンス。
               final newPost = Post(
                 text: text,
                 createdAt: Timestamp.now(), // 投稿日時は現在とします
@@ -68,30 +68,6 @@ class _ChatPageState extends State<ChatPage> {
           ),
           // ),
         ],
-=======
-      body: Center(
-        child: TextFormField(onFieldSubmitted: (text) {
-          //クラスの使うオブジェクトを書く。
-          final user = FirebaseAuth.instance.currentUser!;
-          final posterId = user.uid; //ログイン中のuserIdがとれる。
-          final posterName = user.displayName!; // Googleアカウントの名前がとれます
-          final posterImageUrl = user.photoURL!; // Googleアカウントのアイコンデータがとれます
-
-          // 先ほど作った postsReference からランダムなIDのドキュメントリファレンスを作成します
-          // doc の引数を空にするとランダムなIDが採番されます
-          final newDocumentReference = postsReference.doc();
-          //因数を定義。mapclassの形。
-          final newPost = Post(
-            text: text,
-            createdAt: Timestamp.now(), // 投稿日時は現在とします
-            posterName: posterName,
-            posterImageUrl: posterImageUrl,
-            posterId: posterId,
-            reference: newDocumentReference,
-          );
-          newDocumentReference.set(newPost);
-        }),
->>>>>>> refs/remotes/origin/main
       ),
     );
   }

@@ -11,45 +11,147 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  Future<void> signInWithGoogle() async {
-    // GoogleSignIn をして得られた情報を Firebase と関連づけることをやっています。
-    final googleUser =
-        await GoogleSignIn(scopes: ['profile', 'email']).signIn();
+//validation
+  final _formKey = GlobalKey<FormState>();
 
-    final googleAuth = await googleUser?.authentication;
+//会員登録
+  Future<void> _createAccount(String id, String pass) async {
+    try {
+      final credential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: id,
+        password: pass,
+      );
+      //うまくいかなかった場合
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('パスワードが弱いです');
+      } else if (e.code == 'email-already-in-use') {
+        print('すでに使用されているメールアドレスです');
+      } else {
+        print('アカウント作成エラー');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-
-    await FirebaseAuth.instance.signInWithCredential(credential);
+  Future<void> _signIn(String id, String pass) async {
+    try {
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: id,
+        password: pass,
+      );
+      //SignInがうまく行った場合の処理
+      if (mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) {
+            return const ChatPage();
+          }),
+          (route) => false,
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-email') {
+        print('メールアドレスが無効です');
+      } else if (e.code == 'user-not-found') {
+        print('ユーザーが存在しません');
+      } else if (e.code == 'wrong-password') {
+        print('パスワードが間違っています');
+      } else {
+        print('サインインエラー');
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final idController = TextEditingController();
+    final passController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('GoogleSignIn'),
       ),
       body: Center(
-        child: ElevatedButton(
-          child: const Text('GoogleSignIn'),
-          onPressed: () async {
-            await signInWithGoogle();
-            // ログインが成功すると FirebaseAuth.instance.currentUser にログイン中のユーザーの情報が入ります
-            print(FirebaseAuth.instance.currentUser?.displayName);
-            //(mounted)
-            if (mounted) {
-              //elementがnullでない場合
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) {
-                  return const ChatPage();
-                }),
-                (route) => false,
-              );
-            }
-          },
+        //①：formのkeyプロパティにオブジェクトを持たせる。ここ以下のWidgetを管理できるようになる
+        child: Form(
+          key: _formKey,
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            TextFormField(
+              decoration: const InputDecoration(
+                label: Text('E-mail'),
+                icon: Icon(Icons.mail),
+              ),
+
+              controller: idController,
+              //obscureText: true,
+              //②：バリデーションの処理を持たせたTextFormField Widgetを用意する
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+            ),
+
+            /// パスワード入力
+            TextFormField(
+              decoration: const InputDecoration(
+                label: Text('Password'),
+                icon: Icon(Icons.key),
+              ),
+              controller: passController,
+              //obscureText: true,
+              //TODO 質問validatorの位置は関係ある？
+              //②：バリデーションの処理を持たせたTextFormField Widgetを用意する
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+            ),
+
+            /// サインイン
+            Container(
+              margin: const EdgeInsets.all(10),
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Processing Data')),
+                    );
+                  }
+
+                  /// ログインの場合
+                  /// idController.text, passController.textが入る。stringだから
+                  _signIn(idController.text, passController.text);
+                },
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.grey)),
+                child: const Text('サインイン'),
+              ),
+            ),
+
+            /// アカウント作成
+            Container(
+              margin: const EdgeInsets.all(10),
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Processing Data')),
+                    );
+                  }
+
+                  /// アカウント作成の場合
+                  _createAccount(idController.text, passController.text);
+                },
+                child: const Text('アカウント作成'),
+              ),
+            ),
+          ]),
         ),
       ),
     );
