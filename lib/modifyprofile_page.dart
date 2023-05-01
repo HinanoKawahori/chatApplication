@@ -9,50 +9,32 @@ class ModifyProfilePage extends StatefulWidget {
 }
 
 class _ModifyProfilePageState extends State<ModifyProfilePage> {
+  //validation
   final _formKey = GlobalKey<FormState>();
-
-  String? email = FirebaseAuth.instance.currentUser?.email;
-
+  //ログインに必要な変数
+  String? email = FirebaseAuth.instance.currentUser?.email; //emailのとってき方
   String? newEmail;
   TextEditingController newEmailController = TextEditingController();
-  //TODO パスワードは自動ログインの管理下にない。もう一度持ってくる。
   String? password;
   TextEditingController passController = TextEditingController();
 
-  // ①update()の前に実行しログイン
-  // Future<void> login() async {
-  //   password = passController.text;
-  //   await FirebaseAuth.instance
-  //       .signInWithEmailAndPassword(email: email!, password: password!);
-  // }
-
 //ログイン
-  Future<void> login(String id, String pass) async {
+  Future<void> login(String email, String pass) async {
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: id,
+        email: email,
         password: pass,
       );
       //SignInがうまく行った場合の処理
       if (mounted) {
         _updateEmail();
       }
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'invalid-email') {
-        print('メールアドレスが無効です');
-      } else if (e.code == 'user-not-found') {
-        print('ユーザーが存在しません');
-      } else if (e.code == 'wrong-password') {
-        print('パスワードが間違っています');
-      } else {
-        print('サインインエラー');
-      }
-    }
+    } on FirebaseAuthException catch (e) {}
   }
 
   //ログイン後に実行。
   Future<void> _updateEmail() async {
-    newEmail = newEmailController.text;
+    newEmail = newEmailController.text; //Stringにするの忘れない。
     await FirebaseAuth.instance.currentUser!.updateEmail(newEmail!);
   }
 
@@ -76,6 +58,7 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                   icon: Icon(Icons.key),
                 ),
                 controller: passController,
+                //validation
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter some text';
@@ -91,8 +74,7 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                 ),
 
                 controller: newEmailController,
-
-                //②：バリデーションの処理を持たせたTextFormField Widgetを用意する
+                //validation
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter some text';
@@ -106,10 +88,9 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                 margin: const EdgeInsets.all(10),
                 child: ElevatedButton(
                   onPressed: () {
-                    /// ログインの場合
-                    ///3 idController.text, passController.textが入る。stringだから
+                    /// ログイン  String型にするの忘れない。
                     login(email.toString(), passController.text);
-                    // _updateEmail();
+                    //validation
                     if (_formKey.currentState!.validate()) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Processing Data')),

@@ -38,7 +38,10 @@ class _ChatPageState extends State<ChatPage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      //TODO floatingactionbutton
+      floatingActionButton: FloatingActionButton.extended(
+        label: Text('メルアド変更'),
+        icon: Icon(Icons.navigate_next),
         onPressed: () {
           Navigator.push(
               context,
