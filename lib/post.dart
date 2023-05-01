@@ -1,24 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'post.freezed.dart';
 
 //TODO 確認
 //設計図ポスト
-class Post {
-  //プロパティ
-  final String text;
-  final Timestamp createdAt;
-  // final String posterName;
-  // final String posterImageUrl;
-  final String posterId;
-  final DocumentReference reference;
-  //コンストラクタ
-  Post({
-    required this.text,
-    required this.createdAt,
-    // required this.posterName,
-    // required this.posterImageUrl,
-    required this.posterId,
-    required this.reference,
-  });
+@freezed
+class Post with _$Post {
+  const factory Post({
+    required String text,
+    required Timestamp createdAt,
+    required String posterId,
+    required DocumentReference reference,
+  }) = _Post;
 
 //インスタンスの生成
 //firebaseからpost型
