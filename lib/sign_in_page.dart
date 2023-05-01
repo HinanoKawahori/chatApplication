@@ -75,6 +75,7 @@ class _SignInPageState extends State<SignInPage> {
       ),
       body: Center(
         //①：formのkeyプロパティにオブジェクトを持たせる。ここ以下のWidgetを管理できるようになる
+
         child: Form(
           key: _formKey,
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -103,8 +104,9 @@ class _SignInPageState extends State<SignInPage> {
               ),
               controller: passController,
               //obscureText: true,
-              //TODO 質問validatorの位置は関係ある？
+              //TODO 質問validatorの位置は関係ある？ ボタンを押した時に初めてvalueを認知する？
               //②：バリデーションの処理を持たせたTextFormField Widgetを用意する
+
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter some text';
@@ -118,15 +120,14 @@ class _SignInPageState extends State<SignInPage> {
               margin: const EdgeInsets.all(10),
               child: ElevatedButton(
                 onPressed: () {
+                  /// ログインの場合
+                  /// idController.text, passController.textが入る。stringだから
+                  _signIn(idController.text, passController.text);
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Processing Data')),
                     );
                   }
-
-                  /// ログインの場合
-                  /// idController.text, passController.textが入る。stringだから
-                  _signIn(idController.text, passController.text);
                 },
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.grey)),
@@ -139,14 +140,14 @@ class _SignInPageState extends State<SignInPage> {
               margin: const EdgeInsets.all(10),
               child: ElevatedButton(
                 onPressed: () {
+                  /// アカウント作成の場合
+                  ///
+                  _createAccount(idController.text, passController.text);
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Processing Data')),
                     );
                   }
-
-                  /// アカウント作成の場合
-                  _createAccount(idController.text, passController.text);
                 },
                 child: const Text('アカウント作成'),
               ),
