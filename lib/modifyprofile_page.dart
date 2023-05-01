@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
 class ModifyProfilePage extends StatefulWidget {
   const ModifyProfilePage({super.key});
@@ -11,20 +9,25 @@ class ModifyProfilePage extends StatefulWidget {
 }
 
 class _ModifyProfilePageState extends State<ModifyProfilePage> {
-  String? email;
-  String? password;
-  final idController = TextEditingController();
-  final passController = TextEditingController();
-
-  //validation
   final _formKey = GlobalKey<FormState>();
+
+  String? email = FirebaseAuth.instance.currentUser?.email;
 
   String? newEmail;
   TextEditingController newEmailController = TextEditingController();
+  //TODO パスワードは自動ログインの管理下にない。もう一度持ってくる。
+  String? password;
+  TextEditingController passController = TextEditingController();
 
   // ①update()の前に実行しログイン
-  //ログイン
-  Future<void> _signIn(String id, String pass) async {
+  // Future<void> login() async {
+  //   password = passController.text;
+  //   await FirebaseAuth.instance
+  //       .signInWithEmailAndPassword(email: email!, password: password!);
+  // }
+
+//ログイン
+  Future<void> login(String id, String pass) async {
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: id,
@@ -32,7 +35,7 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
       );
       //SignInがうまく行った場合の処理
       if (mounted) {
-        SnackBar(content: Text('valid user'));
+        _updateEmail();
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'invalid-email') {
@@ -47,7 +50,7 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
     }
   }
 
-  //updateEmail
+  //ログイン後に実行。
   Future<void> _updateEmail() async {
     newEmail = newEmailController.text;
     await FirebaseAuth.instance.currentUser!.updateEmail(newEmail!);
@@ -55,7 +58,6 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final idController = TextEditingController();
     final passController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
@@ -67,24 +69,6 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              //
-              TextFormField(
-                decoration: const InputDecoration(
-                  label: Text('E-mail'),
-                  icon: Icon(Icons.mail),
-                ),
-
-                controller: idController,
-                //obscureText: true,
-                //②：バリデーションの処理を持たせたTextFormField Widgetを用意する
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
-              ),
-
               /// パスワード入力
               TextFormField(
                 decoration: const InputDecoration(
@@ -92,34 +76,12 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                   icon: Icon(Icons.key),
                 ),
                 controller: passController,
-                //obscureText: true,
-                //TODO 質問validatorの位置は関係ある？ ボタンを押した時に初めてvalueを認知する？
-                //②：バリデーションの処理を持たせたTextFormField Widgetを用意する
-
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter some text';
                   }
                   return null;
                 },
-              ),
-              Container(
-                margin: const EdgeInsets.all(10),
-                child: ElevatedButton(
-                  onPressed: () {
-                    /// ログインの場合
-                    ///3 idController.text, passController.textが入る。stringだから
-                    _signIn(idController.text, passController.text);
-                    if (_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Processing Data')),
-                      );
-                    }
-                  },
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.grey)),
-                  child: const Text('サインイン'),
-                ),
               ),
 
               TextFormField(
@@ -146,7 +108,8 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                   onPressed: () {
                     /// ログインの場合
                     ///3 idController.text, passController.textが入る。stringだから
-                    _updateEmail();
+                    login(email.toString(), passController.text);
+                    // _updateEmail();
                     if (_formKey.currentState!.validate()) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Processing Data')),

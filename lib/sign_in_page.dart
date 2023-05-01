@@ -1,7 +1,7 @@
 import 'package:chatapplication/chat_page.dart';
+import 'package:chatapplication/forgetpassword.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -22,6 +22,7 @@ class _SignInPageState extends State<SignInPage> {
         email: id,
         password: pass,
       );
+      print(id);
       //うまくいかなかった場合
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -67,12 +68,13 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
+    final _auth = FirebaseAuth.instance;
     final idController = TextEditingController();
     final passController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('GoogleSignIn'),
+        title: const Text('SignIn'),
       ),
       body: Center(
         //①：formのkeyプロパティにオブジェクトを持たせる。ここ以下のWidgetを管理できるようになる
@@ -152,6 +154,19 @@ class _SignInPageState extends State<SignInPage> {
                 },
                 child: const Text('アカウント作成'),
               ),
+            ),
+
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return ForgotPassword(); // 遷移先の画面widgetを指定
+                    },
+                  ),
+                );
+              },
+              child: Text('パスワードを忘れた'),
             ),
 
             // }

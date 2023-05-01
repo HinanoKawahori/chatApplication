@@ -6,16 +6,16 @@ class Post {
   //プロパティ
   final String text;
   final Timestamp createdAt;
-  final String posterName;
-  final String posterImageUrl;
+  // final String posterName;
+  // final String posterImageUrl;
   final String posterId;
   final DocumentReference reference;
   //コンストラクタ
   Post({
     required this.text,
     required this.createdAt,
-    required this.posterName,
-    required this.posterImageUrl,
+    // required this.posterName,
+    // required this.posterImageUrl,
     required this.posterId,
     required this.reference,
   });
@@ -32,13 +32,12 @@ class Post {
       //ex)text : map['text']  textにmap['text']を代入！
       text: map['text'],
       createdAt: map['createdAt'],
-      posterName: map['posterName'],
-      posterImageUrl: map['posterImageUrl'],
+      // posterName: map['posterName'],
+      // posterImageUrl: map['posterImageUrl'],
       posterId: map['posterId'],
       reference: snapshot.reference,
     );
   }
-
 
 //post型からfirebase
 //PostインスタンスからMap<String, dynamic>に変換するためのtoMap関数。
@@ -47,8 +46,8 @@ class Post {
       //プロパティ名＝key名、 Firestore にデータを保存するときに活躍
       'text': text,
       'createdAt': createdAt,
-      'posterName': posterName,
-      'posterImageUrl': posterImageUrl,
+      // 'posterName': posterName,
+      // 'posterImageUrl': posterImageUrl,
       'posterId': posterId,
     };
   }

@@ -1,5 +1,6 @@
 import 'package:chatapplication/modifyprofile_page.dart';
 import 'package:chatapplication/post.dart';
+import 'package:chatapplication/sign_in_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,23 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('チャット'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () async {
+              // ログアウト処理
+              // 内部で保持しているログイン情報等が初期化される
+              await FirebaseAuth.instance.signOut();
+              await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return SignInPage();
+                  },
+                ),
+              );
+            },
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -58,8 +76,8 @@ class _ChatPageState extends State<ChatPage> {
               //1,user変数にユーザーデータを格納。
               final user = FirebaseAuth.instance.currentUser!;
               final posterId = user.uid; //ログイン中のuserIdがとれる。
-              final posterName = user.displayName!; // Googleアカウントの名前がとれます
-              final posterImageUrl = user.photoURL!; // Googleアカウントのアイコンデータがとれます
+              // final posterName = user.displayName!; // Googleアカウントの名前がとれます
+              // final posterImageUrl = user.photoURL!; // Googleアカウントのアイコンデータがとれます
 
               //２、ランダムなpostIdのドキュメントリファレンスを作成。
               //(doc();)で作れる。
@@ -68,8 +86,8 @@ class _ChatPageState extends State<ChatPage> {
               final newPost = Post(
                 text: text,
                 createdAt: Timestamp.now(), // 投稿日時は現在とします
-                posterName: posterName,
-                posterImageUrl: posterImageUrl,
+                // posterName: posterName,
+                // posterImageUrl: posterImageUrl,
                 posterId: posterId,
                 reference: newDocumentReference,
               );
