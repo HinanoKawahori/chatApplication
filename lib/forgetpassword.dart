@@ -9,6 +9,8 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
+  //validation
+  final _formKey = GlobalKey<FormState>();
   // 入力したメールアドレス
   String _email = '';
 
@@ -21,33 +23,57 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       body: Center(
         child: Container(
           padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              // メールアドレス入力用テキストフィールド
-              TextFormField(
-                decoration:
-                    const InputDecoration(labelText: 'メールアドレスを入力してください'),
-                //TODO ここがちゃんとわかっていない。
-                onChanged: (String value) {
-                  setState(() {
-                    _email = value;
-                  });
-                },
-              ),
-              // パスワードリセットボタン
-              ElevatedButton(
-                  child: const Text('パスワードリセットする'),
-                  onPressed: () async {
-                    try {
-                      await FirebaseAuth.instance
-                          .sendPasswordResetEmail(email: _email);
-                      print("パスワードリセット用のメールを送信しました");
-                    } catch (e) {
-                      print(e);
-                    }
-                  }),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            // child: Form(
+            //   key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                // メールアドレス入力用テキストフィールド
+                //①：formのkeyプロパティにオブジェクトを持たせる。
+
+                Form(
+                  key: _formKey,
+                  child: TextFormField(
+                    //②：バリデーションの処理を持たせたTextFormField Widgetを用意する
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      return null;
+                    },
+                    decoration:
+                        const InputDecoration(labelText: 'メールアドレスを入力してください'),
+                    // TODO ここのsetstateは要らなかった！！
+                    onChanged: (String value) {
+                      _email = value;
+                    },
+                  ),
+                ),
+
+                // パスワードリセットボタン
+                ElevatedButton(
+                    child: const Text('パスワードリセットする'),
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        //if okayなら、実行！
+                        try {
+                          await FirebaseAuth.instance
+                              .sendPasswordResetEmail(email: _email);
+                          print("パスワードリセット用のメールを送信しました");
+                        } catch (e) {
+                          print(e);
+                        }
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Processing Data')),
+                        );
+                      }
+                    }),
+              ],
+            ),
+            // ),
           ),
         ),
       ),

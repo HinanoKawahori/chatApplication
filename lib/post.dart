@@ -1,48 +1,44 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'post.freezed.dart';
+class Post {
+  Post({
+    required this.text,
+    required this.createdAt,
+    required this.posterId,
+    required this.reference,
+  });
 
-//TODO 確認
-//設計図ポスト
-@freezed
-class Post with _$Post {
-  const factory Post({
-    required String text,
-    required Timestamp createdAt,
-    required String posterId,
-    required DocumentReference reference,
-  }) = _Post;
-
-//インスタンスの生成
-//firebaseからpost型
-//因数としてfirestoreのマップ型documentsnapshotを受け取り、Postのインスタンスを作る。
   factory Post.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) {
-    //map = data{key, value}
-    // documensSnapshot からmapに変換
-    final map = snapshot.data()!;
+    final map = snapshot.data()!; // data() の中には Map 型のデータが入っています。
+    // data()! この ! 記号は nullable な型を non-nullable として扱うよ！ という意味です。
+    // data の中身はかならず入っているだろうという仮説のもと ! をつけています。
+    // map データが得られているのでここからはいつもと同じです。
     return Post(
-      //map型のデータが得られる。
-      //ex)text : map['text']  textにmap['text']を代入！
       text: map['text'],
       createdAt: map['createdAt'],
-      // posterName: map['posterName'],
-      // posterImageUrl: map['posterImageUrl'],
       posterId: map['posterId'],
-      reference: snapshot.reference,
+      reference:
+          snapshot.reference, // 注意。reference は map ではなく snapshot に入っています。
     );
   }
 
-//post型からfirebase
-//PostインスタンスからMap<String, dynamic>に変換するためのtoMap関数。
   Map<String, dynamic> toMap() {
     return {
-      //プロパティ名＝key名、 Firestore にデータを保存するときに活躍
       'text': text,
       'createdAt': createdAt,
-      // 'posterName': posterName,
-      // 'posterImageUrl': posterImageUrl,
       'posterId': posterId,
     };
   }
+
+  /// 投稿文
+  final String text;
+
+  /// 投稿日時
+  final Timestamp createdAt;
+
+  /// 投稿者のユーザーID
+  final String posterId;
+
+  /// Firestoreのどこにデータが存在するかを表すpath情報
+  final DocumentReference reference;
 }

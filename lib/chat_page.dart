@@ -15,6 +15,17 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  //validation
+  final _formKey = GlobalKey<FormState>();
+  final postController = TextEditingController();
+
+  @override
+  void dispose() {
+    print('text');
+    postController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,14 +36,17 @@ class _ChatPageState extends State<ChatPage> {
             icon: Icon(Icons.logout),
             onPressed: () async {
               // ログアウト処理
-              // 内部で保持しているログイン情報等が初期化される
+              // 元の画面に戻らないように、
+              // pushandremoveuntil(次のページに遷移しつつ、特定の条件のページまで過去のページを取り除く)をつける。
               await FirebaseAuth.instance.signOut();
-              await Navigator.of(context).push(
+
+              await Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
                   builder: (context) {
                     return SignInPage();
                   },
                 ),
+                (route) => false,
               );
             },
           ),
@@ -43,63 +57,102 @@ class _ChatPageState extends State<ChatPage> {
         label: Text('メルアド変更'),
         icon: Icon(Icons.navigate_next),
         onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  // （2） 実際に表示するページ(ウィジェット)を指定する
-                  builder: (context) => ModifyProfilePage()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => ModifyProfilePage()));
         },
       ),
-      body: Column(
-        children: [
-          //child1, streambuilder
-          Expanded(
-            child: StreamBuilder<QuerySnapshot<Post>>(
-              // stream プロパティに snapshots() を与えると、コレクションの中のドキュメントをリアルタイムで監視することができます。
-              stream: postsReference.orderBy('createdAt').snapshots(),
-              // ここで受け取っている snapshot に stream で流れてきたデータが入っています。
-              builder: (context, snapshot) {
-                // docs には Collection に保存されたすべてのドキュメントが入ります。
-                // 取得までには時間がかかるのではじめは null が入っています。
-                // null の場合は空配列が代入されるようにしています。
-                final docs = snapshot.data?.docs ?? [];
-                return ListView.builder(
-                  itemCount: docs.length,
-                  itemBuilder: (context, index) {
-                    final post = docs[index].data();
-                    return Text(post.text);
-                  },
-                );
-              },
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            //child1, streambuilder
+            Expanded(
+              child: StreamBuilder<QuerySnapshot<Post>>(
+                // stream プロパティに snapshots() >> リアルタイム監視
+                stream: postsReference.orderBy('createdAt').snapshots(),
+                // ここで受け取っている snapshot に stream で流れてきたデータが入っています。
+                builder: (context, snapshot) {
+                  // docs には Collection に保存されたすべてのドキュメントが入ります。
+                  // 取得までには時間がかかるのではじめは null が入っています。
+                  // null の場合は空配列が代入されるようにしています。
+                  final docs = snapshot.data?.docs ?? [];
+                  return ListView.builder(
+                    itemCount: docs.length,
+                    itemBuilder: (context, index) {
+                      final post = docs[index].data();
+                      return Text(post.text);
+                    },
+                  );
+                },
+              ),
             ),
-          ),
 
-            TextFormField(
-            onFieldSubmitted: (text) {
-              //1,user変数にユーザーデータを格納。
-              final user = FirebaseAuth.instance.currentUser!;
-              final posterId = user.uid; //ログイン中のuserIdがとれる。
-              // final posterName = user.displayName!; // Googleアカウントの名前がとれます
-              // final posterImageUrl = user.photoURL!; // Googleアカウントのアイコンデータがとれます
+            Form(
+              key: _formKey,
+              child: TextFormField(
+                controller: postController,
+                decoration: const InputDecoration(
+                  label: Text('your post here'),
+                  icon: Icon(Icons.post_add),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.all(10),
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    //if　okeyなら、投稿
+                    _post(postController.text);
 
-              //２、ランダムなpostIdのドキュメントリファレンスを作成。
-              //(doc();)で作れる。
-              final newDocumentReference = postsReference.doc();
-              //postクラス型からできるnewPostインスタンス。
-              final newPost = Post(
-                text: text,
-                createdAt: Timestamp.now(), // 投稿日時は現在とします
-                // posterName: posterName,
-                // posterImageUrl: posterImageUrl,
-                posterId: posterId,
-                reference: newDocumentReference,
-              );
-              newDocumentReference.set(newPost);
-            },
-          ),
-          // ),
-        ],
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Processing Data')),
+                    );
+                  }
+                },
+                child: const Text('ポスト投稿'),
+              ),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  //タスク投稿
+  Future<void> _post(String text) async {
+    // 1,user変数にユーザーデータを格納。
+    final user = FirebaseAuth.instance.currentUser!;
+    final posterId = user.uid; //ログイン中のuserIdがとれる。
+    // ２,ランダムなpostIdのドキュメントリファレンスを作成。doc();で作れる
+    final newDocumentReference = postsReference.doc();
+
+    final newPost = Post(
+      text: text,
+      createdAt: Timestamp.now(), // 投稿日時は現在とします
+      posterId: posterId,
+      reference: newDocumentReference,
+    );
+    print(newPost);
+
+    FirebaseFirestore.instance.collection('posts').withConverter<Post>(
+      // <> ここに変換したい型名をいれます。今回は Post です。
+      fromFirestore: ((snapshot, _) {
+        // 第二引数は使わないのでその場合は _ で不使用であることを分かりやすくしています。
+        return Post.fromFirestore(
+            snapshot); // 先ほど定期着した fromFirestore がここで活躍します。
+      }),
+      toFirestore: ((Post postData, _) {
+        return postData.toMap(); // 先ほど適宜した toMap がここで活躍します。
+      }),
+    );
+    // 3,postクラス型からできるnewPostインスタンス。
+    await newDocumentReference.set(newPost);
   }
 }

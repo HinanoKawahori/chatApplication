@@ -45,6 +45,9 @@ class _SignInPageState extends State<SignInPage> {
         password: pass,
       );
       //SignInがうまく行った場合の処理
+      //TODO なぜここに、pushAndRemoveUntilをつけるのか??
+      //TODO ログイン前の状態にもどらないようにするため。(過去のページを取り除くため)
+      //TODO　pushでもページは遷移するけど、ログイン前のページに戻ってしまう。
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) {
@@ -144,8 +147,8 @@ class _SignInPageState extends State<SignInPage> {
                 onPressed: () {
                   /// アカウント作成の場合
                   ///3 createAccount
-                  _createAccount(idController.text, passController.text);
                   if (_formKey.currentState!.validate()) {
+                    _createAccount(idController.text, passController.text);
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Processing Data')),
                     );

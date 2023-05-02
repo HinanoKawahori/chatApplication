@@ -42,6 +42,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+//TODO freezed???
 //withConverterでcollectionReferenceを作る。
 final postsReference =
     FirebaseFirestore.instance.collection('posts').withConverter<Post>(
