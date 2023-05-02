@@ -11,8 +11,7 @@ class ForgotPassword extends StatefulWidget {
 class _ForgotPasswordState extends State<ForgotPassword> {
   //validation
   final _formKey = GlobalKey<FormState>();
-  // 入力したメールアドレス
-  String _email = '';
+  final emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +24,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           padding: const EdgeInsets.all(24),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            // child: Form(
-            //   key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -43,12 +40,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       }
                       return null;
                     },
+
                     decoration:
                         const InputDecoration(labelText: 'メールアドレスを入力してください'),
-                    // TODO ここのsetstateは要らなかった！！
-                    onChanged: (String value) {
-                      _email = value;
-                    },
+
+                    controller: emailController,
                   ),
                 ),
 
@@ -59,8 +55,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       if (_formKey.currentState!.validate()) {
                         //if okayなら、実行！
                         try {
-                          await FirebaseAuth.instance
-                              .sendPasswordResetEmail(email: _email);
+                          await FirebaseAuth.instance.sendPasswordResetEmail(
+                              email: emailController.text);
                           print("パスワードリセット用のメールを送信しました");
                         } catch (e) {
                           print(e);
@@ -73,7 +69,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     }),
               ],
             ),
-            // ),
           ),
         ),
       ),

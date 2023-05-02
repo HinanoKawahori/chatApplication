@@ -17,11 +17,17 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   //validation
   final _formKey = GlobalKey<FormState>();
+
   final postController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  //TODO　質問　なかっても動くけど、どうなる？？
+  @override
   void dispose() {
-    print('text');
     postController.dispose();
     super.dispose();
   }
@@ -90,6 +96,8 @@ class _ChatPageState extends State<ChatPage> {
             Form(
               key: _formKey,
               child: TextFormField(
+                //TODO controllerを置いておけば、テキストフィールド以外のwidgetから
+                //どんな文字があるかわかるようになる。
                 controller: postController,
                 decoration: const InputDecoration(
                   label: Text('your post here'),
@@ -110,6 +118,7 @@ class _ChatPageState extends State<ChatPage> {
                   if (_formKey.currentState!.validate()) {
                     //if　okeyなら、投稿
                     _post(postController.text);
+                    postController.clear();
 
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Processing Data')),
@@ -140,18 +149,6 @@ class _ChatPageState extends State<ChatPage> {
       reference: newDocumentReference,
     );
     print(newPost);
-
-    FirebaseFirestore.instance.collection('posts').withConverter<Post>(
-      // <> ここに変換したい型名をいれます。今回は Post です。
-      fromFirestore: ((snapshot, _) {
-        // 第二引数は使わないのでその場合は _ で不使用であることを分かりやすくしています。
-        return Post.fromFirestore(
-            snapshot); // 先ほど定期着した fromFirestore がここで活躍します。
-      }),
-      toFirestore: ((Post postData, _) {
-        return postData.toMap(); // 先ほど適宜した toMap がここで活躍します。
-      }),
-    );
     // 3,postクラス型からできるnewPostインスタンス。
     await newDocumentReference.set(newPost);
   }

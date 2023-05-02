@@ -28,6 +28,10 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
       //SignInがうまく行った場合の処理
       if (mounted) {
         _updateEmail();
+        //TODO　質問　パスワードのみ消えないのは、
+        //パスワードはcontrollerが監視できる対象じゃないから？
+        newEmailController.clear();
+        passController.clear();
       }
     } on FirebaseAuthException catch (e) {}
   }
