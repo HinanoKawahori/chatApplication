@@ -74,7 +74,7 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ),
 
-          TextFormField(
+            TextFormField(
             onFieldSubmitted: (text) {
               //1,user変数にユーザーデータを格納。
               final user = FirebaseAuth.instance.currentUser!;
