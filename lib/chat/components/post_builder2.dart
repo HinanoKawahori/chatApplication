@@ -1,3 +1,7 @@
+import 'package:chatapplication/chat/components/parts/chatTile.dart';
+import 'package:chatapplication/data_models/post/post.dart';
+import 'package:chatapplication/data_models/user/user.dart';
+import 'package:chatapplication/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -7,19 +11,15 @@ class PostBuilder2 extends StatefulWidget {
 }
 
 class _PostBuilder2State extends State<PostBuilder2> {
-  final Stream<QuerySnapshot> _postStream = FirebaseFirestore.instance
-      .collection('posts')
-      .orderBy('createdAt')
-      //タスクの表示自体に個人の特定をしたかったらこれをつける。
-      // .where('posterId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-      .snapshots();
-
   @override
   Widget build(BuildContext context) {
     //TODO 1 まず投稿を、posterIdをつけて保存する。
     return StreamBuilder(
-        stream: _postStream,
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        stream: FirebaseFirestore.instance
+            .collection('posts')
+            .orderBy('createdAt')
+            .snapshots(),
+        builder: (BuildContext context, snapshot) {
           if (snapshot.hasError) {
             return const Text('エラーが発生しました');
           } else if (snapshot.hasData && snapshot.data!.docs.isEmpty) {
@@ -27,52 +27,48 @@ class _PostBuilder2State extends State<PostBuilder2> {
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
           } else {
-            List<QueryDocumentSnapshot> docs = snapshot.data?.docs ?? [];
+            //List<QuerySnapshot<Map<String, dynamic>>> docs = snapshot.data?.docs ?? [];
+            List docs = snapshot.data?.docs ?? [];
 
             return ListView(
-              //TODO質問　ここの部分。
+              //Listdocsから、docを一つずつとる。
               children: docs.map((doc) {
+                //TODO質問　ここの書き方
+
                 Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
                 //TODO post名前を表示させるために、ここでとっておく。
-                String post = data['text']; //TODO あかん書き方。
-                String userId = data['posterId'];
+                String postText = postData.text;
+                String userId = postData.posterId;
                 //TODO ここで、タスク名とuserIdを結びつける。
+                String postText = postData.text;
+                String userId = postData.posterId;
 
                 //ユーザーIDを結びつける。
-                return StreamBuilder<DocumentSnapshot>(
+                return StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection('users')
-                      //ここにuserIdをいれなきゃだめだ。
                       .doc(userId)
                       .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data!.exists) {
-                        //userDataをとってくる。
+                  builder: (context, snap) {
+                    if (snap.hasData) {
+                      if (snap.data!.exists) {
+                        //List document = snap.data!.data() ?? [];
+                        Map<String, dynamic> userMapData =
+                            snap.data!.data() ?? {};
+                        //Map<String, dynamic> userMapData = doc.data();
+                        User userData = User.fromJson(userMapData);
+                        String userName = userData.userName;
 
-                        final userData =
-                            snapshot.data?.data() as Map<String, dynamic>;
-                        //userNameを定義する
-                        String userName = userData['userName']; //追加したい情報!!!!!!
-                        return Card(
-                          child: ListTile(
-                            title: Text('$post'), // Display the task name
-                            subtitle: Text(
-                                '$userName'), // Display the user name as subtitle
-                          ),
-                        );
+                        //追加したい情報!!!!!!
+                        return ChatTile(postText: postText, userName: userName);
                       } else {
-                        return Card(
-                            child: ListTile(
-                          title: Text('$post'), // Display the task name
-                          subtitle: Text(
-                              'User not found'), // Display a default text if user data does not exist
-                        ));
+                        return ChatTile(
+                            postText: postText, userName: 'User not found');
                       }
                     } else if (snapshot.hasError) {
                       return Card(
                           child: ListTile(
-                        title: Text('$post'), // Display the task name
+                        title: Text(postText), // Display the task name
                         subtitle: Text(
                             'Error: ${snapshot.error}'), // Display the error message
                       ));
@@ -81,7 +77,7 @@ class _PostBuilder2State extends State<PostBuilder2> {
 
                       return Card(
                           child: ListTile(
-                        title: Text('$post'), // Display the task name
+                        title: Text(postText), // Display the task name
                         // subtitle: Text('投稿者: $userName'),
                         // Display a progress indicator while data is being fetched
                       ));
