@@ -28,8 +28,7 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
       //SignInがうまく行った場合の処理
       if (mounted) {
         _updateEmail();
-        //TODO　質問　パスワードのみ消えないのは、
-        //パスワードはcontrollerが監視できる対象じゃないから？
+
         newEmailController.clear();
         passController.clear();
       }
@@ -44,10 +43,9 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final passController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
-        title: Text('メルアド変更'),
+        title: Text('プロフィール変更'),
       ),
       body: Form(
         key: _formKey,
@@ -87,7 +85,7 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                 },
               ),
 
-              /// サインイン
+              /// メルアド変更
               Container(
                 margin: const EdgeInsets.all(10),
                 child: ElevatedButton(
@@ -97,13 +95,33 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                     //validation
                     if (_formKey.currentState!.validate()) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Processing Data')),
+                        const SnackBar(content: Text('新しいメルアドに変更しました。')),
                       );
                     }
                   },
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(Colors.grey)),
-                  child: const Text('変更'),
+                  child: const Text('メルアド変更'),
+                ),
+              ),
+
+              /// 名前変更
+              Container(
+                margin: const EdgeInsets.all(10),
+                child: ElevatedButton(
+                  onPressed: () {
+                    /// ログイン  String型にするの忘れない。
+                    login(email.toString(), passController.text);
+                    //validation
+                    if (_formKey.currentState!.validate()) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('新しいメルアドに変更しました。')),
+                      );
+                    }
+                  },
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.grey)),
+                  child: const Text('メルアド変更'),
                 ),
               ),
             ],
