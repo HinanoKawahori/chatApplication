@@ -41,3 +41,19 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+final postsReference = FirebaseFirestore.instance.collection('posts');
+//TODO converterを使った場合。
+// final postsReference =
+//     FirebaseFirestore.instance.collection('posts').withConverter<Post>(
+//   // <> ここに変換したい型名をいれます。今回は Post です。
+//   fromFirestore: ((snapshot, _) {
+//     // 第二引数は使わないのでその場合は _ で不使用であることを分かりやすくしています。
+//     return Post.fromJson(snapshot.data()!); // 先ほど定期着した fromFirestore がここで活躍します。
+//   }),
+//   toFirestore: ((Post postData, _) {
+//     return postData.toJson(); // 先ほど適宜した toMap がここで活躍します。
+//   }),
+// );
+
+final usersReference = FirebaseFirestore.instance.collection('users');

@@ -1,10 +1,10 @@
 import 'package:chatapplication/chat/chat_page.dart';
-import 'package:chatapplication/data_models/userData/userData.dart';
+import 'package:chatapplication/data_models/user/user.dart';
 import 'package:chatapplication/forgetpassword.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
+//TODO Userがどちらにも使われているから、authにはprefixをつける。
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -22,19 +22,20 @@ class _SignInPageState extends State<SignInPage> {
     try {
       //１authでのアカウント作成
       final credential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          await auth.FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: id,
         password: pass,
       );
       //２firebaseでのアカウント作成
-      final user = FirebaseAuth.instance.currentUser!;
+      final user = auth.FirebaseAuth.instance.currentUser!;
       final userId = user.uid; //ログイン中のuserIdがとれる。
       // ２,userId(=posterId)を含むuserclassを作成。
-      final newUser = UserData(
-        userId: userId,
-        imageUrl: '',
-        userName: '',
-      );
+      final newUser = User(
+          userId: userId,
+          imageUrl: '',
+          userName: '',
+          createdAt: DateTime.now());
+
       print("______$newUser");
       //TODO　3,firebaseにuserclassを保存。
       FirebaseFirestore.instance
@@ -46,7 +47,7 @@ class _SignInPageState extends State<SignInPage> {
       //credential.user!.uid;
       print(id);
       //うまくいかなかった場合
-    } on FirebaseAuthException catch (e) {
+    } on auth.FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('パスワードが弱いです');
       } else if (e.code == 'email-already-in-use') {
@@ -62,7 +63,8 @@ class _SignInPageState extends State<SignInPage> {
 //ログイン
   Future<void> _signIn(String id, String pass) async {
     try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final credential =
+          await auth.FirebaseAuth.instance.signInWithEmailAndPassword(
         email: id,
         password: pass,
       );
@@ -78,7 +80,7 @@ class _SignInPageState extends State<SignInPage> {
           (route) => false,
         );
       }
-    } on FirebaseAuthException catch (e) {
+    } on auth.FirebaseAuthException catch (e) {
       if (e.code == 'invalid-email') {
         print('メールアドレスが無効です');
       } else if (e.code == 'user-not-found') {
@@ -93,7 +95,7 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    final _auth = FirebaseAuth.instance;
+    final _auth = auth.FirebaseAuth.instance;
     final idController = TextEditingController();
     final passController = TextEditingController();
 

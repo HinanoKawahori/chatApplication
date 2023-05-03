@@ -33,12 +33,12 @@ class _PostBuilder2State extends State<PostBuilder2> {
             return ListView(
               //Listdocsから、docを一つずつとる。
               children: docs.map((doc) {
-                //TODO質問　ここの書き方
-
-                Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-                //TODO post名前を表示させるために、ここでとっておく。
-                String postText = postData.text;
-                String userId = postData.posterId;
+                //QDS（doc)を使える形にする。
+                Map<String, dynamic> postMapData = doc.data();
+                //{QDS}をpostの形にする。
+                Post postData = Post.fromJson(postMapData);
+                // Map<String, dynamic> data = doc.data();
+                //TODO ここで初めてtext,posterIdなどのプロパティが使える。
                 //TODO ここで、タスク名とuserIdを結びつける。
                 String postText = postData.text;
                 String userId = postData.posterId;

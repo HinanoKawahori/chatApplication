@@ -21,7 +21,7 @@ Post _$PostFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Post {
   String get text => throw _privateConstructorUsedError;
-  DateTime get createdAt => throw _privateConstructorUsedError;
+  DateTime get createdAt => throw _privateConstructorUsedError; //DateTime
   String get posterId => throw _privateConstructorUsedError;
   String get postId => throw _privateConstructorUsedError;
 
@@ -136,6 +136,7 @@ class _$_Post implements _Post {
   final String text;
   @override
   final DateTime createdAt;
+//DateTime
   @override
   final String posterId;
   @override
@@ -191,7 +192,7 @@ abstract class _Post implements Post {
   String get text;
   @override
   DateTime get createdAt;
-  @override
+  @override //DateTime
   String get posterId;
   @override
   String get postId;

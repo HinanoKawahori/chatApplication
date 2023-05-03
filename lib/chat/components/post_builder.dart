@@ -1,7 +1,6 @@
 import 'package:chatapplication/data_models/post/post.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../../data_models/userData/userData.dart';
 
 class PostBuilder extends StatelessWidget {
   final _db = FirebaseFirestore.instance;

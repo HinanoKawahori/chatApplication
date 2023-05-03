@@ -56,7 +56,7 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
     await FirebaseAuth.instance.currentUser!.updateEmail(newEmail!);
   }
 
-//TODO   名前変更
+//TODO firebaseUpdate   名前変更
   Future<void> _updateName() async {
     final docId = FirebaseAuth.instance.currentUser?.uid;
     newName = newNameController.text;
@@ -176,9 +176,6 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                   if (_formKey2.currentState!.validate()) {
                     _updateName();
                     newNameController.clear();
-
-                    ///TODO　質問　特定方法
-
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('名前を変更しました。')),
                     );
