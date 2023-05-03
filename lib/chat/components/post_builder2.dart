@@ -1,3 +1,5 @@
+import 'package:chatapplication/data_models/post/post.dart';
+import 'package:chatapplication/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,18 +12,15 @@ class PostBuilder2 extends StatefulWidget {
 }
 
 class _PostBuilder2State extends State<PostBuilder2> {
-  final Stream<QuerySnapshot> _postStream = FirebaseFirestore.instance
-      .collection('posts')
-      .orderBy('createdAt')
-      // .where('posterId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-      .snapshots();
-
   @override
   Widget build(BuildContext context) {
     //TODO 1 まず投稿を、posterIdをつけて保存する。
     return StreamBuilder(
-        stream: _postStream,
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        stream: FirebaseFirestore.instance
+            .collection('post')
+            .orderBy('createdAt')
+            .snapshots(),
+        builder: (BuildContext context, snapshot) {
           if (snapshot.hasError) {
             return const Text('エラーが発生しました');
           } else if (snapshot.hasData && snapshot.data!.docs.isEmpty) {
@@ -29,16 +28,18 @@ class _PostBuilder2State extends State<PostBuilder2> {
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
           } else {
-            List<QueryDocumentSnapshot> docs = snapshot.data?.docs ?? [];
+            List docs = snapshot.data?.docs ?? [];
 
             return ListView(
               children: docs.map((doc) {
                 //TODO質問　ここの書き方
+                Map<String, dynamic> postMapData = doc.data();
+                Post postData = Post.fromJson(postMapData);
+                // Map<String, dynamic> data = doc.data();
 
-                Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
                 //TODO post名前を表示させるために、ここでとっておく。
-                String post = data['text'];
-                String userId = data['posterId'];
+                String postText = postData.text;
+                String userId = postData.posterId;
                 //TODO ここで、タスク名とuserIdを結びつける。
 
                 //ユーザーIDを結びつける。
