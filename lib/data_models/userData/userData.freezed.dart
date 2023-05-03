@@ -14,34 +14,34 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-userData _$userDataFromJson(Map<String, dynamic> json) {
-  return _userData.fromJson(json);
+UserData _$UserDataFromJson(Map<String, dynamic> json) {
+  return _UserData.fromJson(json);
 }
 
 /// @nodoc
-mixin _$userData {
+mixin _$UserData {
   String get userId => throw _privateConstructorUsedError;
   String get imageUrl => throw _privateConstructorUsedError;
   String get userName => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $userDataCopyWith<userData> get copyWith =>
+  $UserDataCopyWith<UserData> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $userDataCopyWith<$Res> {
-  factory $userDataCopyWith(userData value, $Res Function(userData) then) =
-      _$userDataCopyWithImpl<$Res, userData>;
+abstract class $UserDataCopyWith<$Res> {
+  factory $UserDataCopyWith(UserData value, $Res Function(UserData) then) =
+      _$UserDataCopyWithImpl<$Res, UserData>;
   @useResult
   $Res call({String userId, String imageUrl, String userName});
 }
 
 /// @nodoc
-class _$userDataCopyWithImpl<$Res, $Val extends userData>
-    implements $userDataCopyWith<$Res> {
-  _$userDataCopyWithImpl(this._value, this._then);
+class _$UserDataCopyWithImpl<$Res, $Val extends UserData>
+    implements $UserDataCopyWith<$Res> {
+  _$UserDataCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -73,21 +73,21 @@ class _$userDataCopyWithImpl<$Res, $Val extends userData>
 }
 
 /// @nodoc
-abstract class _$$_userDataCopyWith<$Res> implements $userDataCopyWith<$Res> {
-  factory _$$_userDataCopyWith(
-          _$_userData value, $Res Function(_$_userData) then) =
-      __$$_userDataCopyWithImpl<$Res>;
+abstract class _$$_UserDataCopyWith<$Res> implements $UserDataCopyWith<$Res> {
+  factory _$$_UserDataCopyWith(
+          _$_UserData value, $Res Function(_$_UserData) then) =
+      __$$_UserDataCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String userId, String imageUrl, String userName});
 }
 
 /// @nodoc
-class __$$_userDataCopyWithImpl<$Res>
-    extends _$userDataCopyWithImpl<$Res, _$_userData>
-    implements _$$_userDataCopyWith<$Res> {
-  __$$_userDataCopyWithImpl(
-      _$_userData _value, $Res Function(_$_userData) _then)
+class __$$_UserDataCopyWithImpl<$Res>
+    extends _$UserDataCopyWithImpl<$Res, _$_UserData>
+    implements _$$_UserDataCopyWith<$Res> {
+  __$$_UserDataCopyWithImpl(
+      _$_UserData _value, $Res Function(_$_UserData) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -97,7 +97,7 @@ class __$$_userDataCopyWithImpl<$Res>
     Object? imageUrl = null,
     Object? userName = null,
   }) {
-    return _then(_$_userData(
+    return _then(_$_UserData(
       userId: null == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
@@ -116,12 +116,12 @@ class __$$_userDataCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_userData implements _userData {
-  _$_userData(
+class _$_UserData implements _UserData {
+  _$_UserData(
       {required this.userId, required this.imageUrl, required this.userName});
 
-  factory _$_userData.fromJson(Map<String, dynamic> json) =>
-      _$$_userDataFromJson(json);
+  factory _$_UserData.fromJson(Map<String, dynamic> json) =>
+      _$$_UserDataFromJson(json);
 
   @override
   final String userId;
@@ -132,14 +132,14 @@ class _$_userData implements _userData {
 
   @override
   String toString() {
-    return 'userData(userId: $userId, imageUrl: $imageUrl, userName: $userName)';
+    return 'UserData(userId: $userId, imageUrl: $imageUrl, userName: $userName)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_userData &&
+            other is _$_UserData &&
             (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.imageUrl, imageUrl) ||
                 other.imageUrl == imageUrl) &&
@@ -154,24 +154,24 @@ class _$_userData implements _userData {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_userDataCopyWith<_$_userData> get copyWith =>
-      __$$_userDataCopyWithImpl<_$_userData>(this, _$identity);
+  _$$_UserDataCopyWith<_$_UserData> get copyWith =>
+      __$$_UserDataCopyWithImpl<_$_UserData>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_userDataToJson(
+    return _$$_UserDataToJson(
       this,
     );
   }
 }
 
-abstract class _userData implements userData {
-  factory _userData(
+abstract class _UserData implements UserData {
+  factory _UserData(
       {required final String userId,
       required final String imageUrl,
-      required final String userName}) = _$_userData;
+      required final String userName}) = _$_UserData;
 
-  factory _userData.fromJson(Map<String, dynamic> json) = _$_userData.fromJson;
+  factory _UserData.fromJson(Map<String, dynamic> json) = _$_UserData.fromJson;
 
   @override
   String get userId;
@@ -181,6 +181,6 @@ abstract class _userData implements userData {
   String get userName;
   @override
   @JsonKey(ignore: true)
-  _$$_userDataCopyWith<_$_userData> get copyWith =>
+  _$$_UserDataCopyWith<_$_UserData> get copyWith =>
       throw _privateConstructorUsedError;
 }

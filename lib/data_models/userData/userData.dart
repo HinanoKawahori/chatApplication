@@ -1,17 +1,17 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 part 'userData.freezed.dart';
 part 'userData.g.dart';
 
 @freezed
-class userData with _$userData {
-  factory userData({
+class UserData with _$UserData {
+  factory UserData({
     required String userId,
     required String imageUrl,
     required String userName,
-  }) = _userData;
+  }) = _UserData;
 
-  factory userData.fromJson(Map<String, dynamic> json) =>
-      _$userDataFromJson(json);
+  factory UserData.fromJson(Map<String, dynamic> json) =>
+      _$UserDataFromJson(json);
 }

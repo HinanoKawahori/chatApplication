@@ -8,7 +8,7 @@ part 'post.g.dart';
 class Post with _$Post {
   factory Post({
     required String text,
-    required DateTime createdAt,
+    required DateTime createdAt, //DateTime
     required String posterId,
     required String postId,
   }) = _Post;

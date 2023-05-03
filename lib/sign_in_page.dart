@@ -30,17 +30,17 @@ class _SignInPageState extends State<SignInPage> {
       final user = FirebaseAuth.instance.currentUser!;
       final userId = user.uid; //ログイン中のuserIdがとれる。
       // ２,userId(=posterId)を含むuserclassを作成。
-      final newUser = userData(
+      final newUser = UserData(
         userId: userId,
         imageUrl: '',
         userName: '',
       );
       print("______$newUser");
       //TODO　3,firebaseにuserclassを保存。
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .set(newUser.toJson());
+      // FirebaseFirestore.instance
+      //     .collection('users')
+      //     .doc(user.uid)
+      //     .set(newUser.toJson());
 
       ///userId
       //credential.user!.uid;

@@ -41,9 +41,9 @@ dependencies:
   freezed_annotation: ^2.2.0
   json_annotation:
   uuid:
+  freezed: ^2.3.2
 
 dev_dependencies:
-  freezed: ^2.3.2
   build_runner: ^2.3.3
   json_serializable:
 

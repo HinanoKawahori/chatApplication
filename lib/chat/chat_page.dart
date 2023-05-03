@@ -1,4 +1,5 @@
 import 'package:chatapplication/chat/components/post_builder.dart';
+import 'package:chatapplication/chat/components/post_builder2.dart';
 import 'package:chatapplication/modifyprofile_page.dart';
 import 'package:chatapplication/data_models/post/post.dart';
 import 'package:chatapplication/sign_in_page.dart';
@@ -69,7 +70,7 @@ class _ChatPageState extends State<ChatPage> {
           children: [
             //child1, streambuilder
             Expanded(
-              child: PostBuilder(),
+              child: PostBuilder2(),
             ),
 
             Form(
