@@ -37,10 +37,10 @@ class _SignInPageState extends State<SignInPage> {
       );
       print("______$newUser");
       //TODO　3,firebaseにuserclassを保存。
-      // FirebaseFirestore.instance
-      //     .collection('users')
-      //     .doc(user.uid)
-      //     .set(newUser.toJson());
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .set(newUser.toJson());
 
       ///userId
       //credential.user!.uid;

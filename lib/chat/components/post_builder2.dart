@@ -1,8 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
 class PostBuilder2 extends StatefulWidget {
   @override
@@ -13,6 +10,7 @@ class _PostBuilder2State extends State<PostBuilder2> {
   final Stream<QuerySnapshot> _postStream = FirebaseFirestore.instance
       .collection('posts')
       .orderBy('createdAt')
+      //タスクの表示自体に個人の特定をしたかったらこれをつける。
       // .where('posterId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
       .snapshots();
 
@@ -32,12 +30,11 @@ class _PostBuilder2State extends State<PostBuilder2> {
             List<QueryDocumentSnapshot> docs = snapshot.data?.docs ?? [];
 
             return ListView(
+              //TODO質問　ここの部分。
               children: docs.map((doc) {
-                //TODO質問　ここの書き方
-
                 Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
                 //TODO post名前を表示させるために、ここでとっておく。
-                String post = data['text'];
+                String post = data['text']; //TODO あかん書き方。
                 String userId = data['posterId'];
                 //TODO ここで、タスク名とuserIdを結びつける。
 

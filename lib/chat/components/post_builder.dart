@@ -10,7 +10,10 @@ class PostBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: _db.collection('posts').orderBy('createdAt').snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection('posts')
+          .orderBy('createdAt')
+          .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
@@ -40,11 +43,6 @@ class PostBuilder extends StatelessWidget {
                 //final userName = snapshot.data!.data();
                 final post =
                     Post.fromJson(docs[index].data() as Map<String, dynamic>);
-
-                // final userDataSnapshot = await FirebaseFirestore.instance
-                //     .collection('users')
-                //     .doc(post.posterId)
-                //     .get();
 
                 // //TODO 名前の取り出し方。
                 // final data = userDataSnapshot.data() as Map<String, dynamic>;
