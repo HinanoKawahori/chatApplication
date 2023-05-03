@@ -1,7 +1,10 @@
-import 'package:chatapplication/chat_page.dart';
+import 'package:chatapplication/chat/chat_page.dart';
+import 'package:chatapplication/data_models/userData/userData.dart';
 import 'package:chatapplication/forgetpassword.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -17,11 +20,30 @@ class _SignInPageState extends State<SignInPage> {
 //会員登録
   Future<void> _createAccount(String id, String pass) async {
     try {
+      //１authでのアカウント作成
       final credential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: id,
         password: pass,
       );
+      //２firebaseでのアカウント作成
+      final user = FirebaseAuth.instance.currentUser!;
+      final userId = user.uid; //ログイン中のuserIdがとれる。
+      // ２,userId(=posterId)を含むuserclassを作成。
+      final newUser = userData(
+        userId: userId,
+        imageUrl: '',
+        userName: '',
+      );
+      print("______$newUser");
+      //TODO　3,firebaseにuserclassを保存。
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .set(newUser.toJson());
+
+      ///userId
+      //credential.user!.uid;
       print(id);
       //うまくいかなかった場合
     } on FirebaseAuthException catch (e) {

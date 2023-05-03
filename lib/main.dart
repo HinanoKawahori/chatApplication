@@ -1,5 +1,5 @@
-import 'package:chatapplication/chat_page.dart';
-import 'package:chatapplication/post.dart';
+import 'package:chatapplication/chat/chat_page.dart';
+import 'package:chatapplication/data_models/post/post.dart';
 import 'package:chatapplication/sign_in_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -44,14 +44,14 @@ class MyApp extends StatelessWidget {
 
 //TODO freezed???
 //withConverterでcollectionReferenceを作る。
-final postsReference =
-    FirebaseFirestore.instance.collection('posts').withConverter<Post>(
-  // <> ここに変換したい型名をいれます。今回は Post です。
-  fromFirestore: ((snapshot, _) {
-    // 第二引数は使わないのでその場合は _ で不使用であることを分かりやすくしています。
-    return Post.fromFirestore(snapshot); // 先ほど定期着した fromFirestore がここで活躍します。
-  }),
-  toFirestore: ((Post postData, _) {
-    return postData.toMap(); // 先ほど適宜した toMap がここで活躍します。
-  }),
-);
+// final postsReference =
+//     FirebaseFirestore.instance.collection('posts').withConverter<Post>(
+//   // <> ここに変換したい型名をいれます。今回は Post です。
+//   fromFirestore: ((snapshot, _) {
+//     // 第二引数は使わないのでその場合は _ で不使用であることを分かりやすくしています。
+//     return Post.fromJson(snapshot.data()!); // 先ほど定期着した fromFirestore がここで活躍します。
+//   }),
+//   toFirestore: ((Post postData, _) {
+//     return postData.toJson(); // 先ほど適宜した toMap がここで活躍します。
+//   }),
+// );

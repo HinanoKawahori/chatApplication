@@ -39,10 +39,14 @@ dependencies:
   google_sign_in: ^6.1.0
   cloud_firestore: ^4.5.3
   freezed_annotation: ^2.2.0
+  json_annotation:
+  uuid:
 
 dev_dependencies:
   freezed: ^2.3.2
   build_runner: ^2.3.3
+  json_serializable:
+
   flutter_test:
     sdk: flutter
 

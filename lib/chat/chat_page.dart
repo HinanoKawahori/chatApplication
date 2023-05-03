@@ -1,11 +1,13 @@
+import 'package:chatapplication/chat/components/post_builder.dart';
 import 'package:chatapplication/modifyprofile_page.dart';
-import 'package:chatapplication/post.dart';
+import 'package:chatapplication/data_models/post/post.dart';
 import 'package:chatapplication/sign_in_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
-import 'main.dart';
+import '../main.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -20,12 +22,6 @@ class _ChatPageState extends State<ChatPage> {
 
   final postController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  //TODO　質問　なかっても動くけど、どうなる？？
   @override
   void dispose() {
     postController.dispose();
@@ -60,7 +56,7 @@ class _ChatPageState extends State<ChatPage> {
       ),
       //TODO floatingactionbutton
       floatingActionButton: FloatingActionButton.extended(
-        label: Text('メルアド変更'),
+        label: Text('プロフィール変更'),
         icon: Icon(Icons.navigate_next),
         onPressed: () {
           Navigator.push(context,
@@ -73,24 +69,7 @@ class _ChatPageState extends State<ChatPage> {
           children: [
             //child1, streambuilder
             Expanded(
-              child: StreamBuilder<QuerySnapshot<Post>>(
-                // stream プロパティに snapshots() >> リアルタイム監視
-                stream: postsReference.orderBy('createdAt').snapshots(),
-                // ここで受け取っている snapshot に stream で流れてきたデータが入っています。
-                builder: (context, snapshot) {
-                  // docs には Collection に保存されたすべてのドキュメントが入ります。
-                  // 取得までには時間がかかるのではじめは null が入っています。
-                  // null の場合は空配列が代入されるようにしています。
-                  final docs = snapshot.data?.docs ?? [];
-                  return ListView.builder(
-                    itemCount: docs.length,
-                    itemBuilder: (context, index) {
-                      final post = docs[index].data();
-                      return Text(post.text);
-                    },
-                  );
-                },
-              ),
+              child: PostBuilder(),
             ),
 
             Form(
@@ -139,17 +118,23 @@ class _ChatPageState extends State<ChatPage> {
     // 1,user変数にユーザーデータを格納。
     final user = FirebaseAuth.instance.currentUser!;
     final posterId = user.uid; //ログイン中のuserIdがとれる。
-    // ２,ランダムなpostIdのドキュメントリファレンスを作成。doc();で作れる
-    final newDocumentReference = postsReference.doc();
 
+    // ２,ランダムなpostIdのドキュメントリファレンスを作成。doc();で作れる
+    final postId = Uuid().v1();
+    // postクラスを生成。
     final newPost = Post(
       text: text,
-      createdAt: Timestamp.now(), // 投稿日時は現在とします
+      createdAt: DateTime.now(),
+      //投稿者id(postnい)
       posterId: posterId,
-      reference: newDocumentReference,
+      //postid
+      postId: postId,
     );
     print(newPost);
-    // 3,postクラス型からできるnewPostインスタンス。
-    await newDocumentReference.set(newPost);
+    // firebaseに保存
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postId)
+        .set(newPost.toJson());
   }
 }

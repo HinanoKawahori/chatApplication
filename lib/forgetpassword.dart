@@ -12,6 +12,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   //validation
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
+  final passcontroller = TextEditingController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +65,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           await FirebaseAuth.instance.sendPasswordResetEmail(
                               email: emailController.text);
                           print("パスワードリセット用のメールを送信しました");
+                          emailController.clear();
+                          // ignore: use_build_context_synchronously
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('パスワードリセット用のメールを送信しました')),
+                          );
                         } catch (e) {
                           print(e);
                         }
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Processing Data')),
-                        );
                       }
                     }),
               ],
