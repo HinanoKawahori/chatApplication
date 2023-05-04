@@ -14,8 +14,6 @@ class UploadScreen extends StatefulWidget {
 }
 
 class _UploadScreenState extends State<UploadScreen> {
-  /// ユーザIDの取得
-  Image? _img;
   Text? _text;
   // Get the Firebase Auth instance
 
@@ -29,21 +27,17 @@ class _UploadScreenState extends State<UploadScreen> {
     }
     io.File file = io.File(pickerFile.path);
     ////前半（storageに画像ファイルを保存)////
-    //2、storageパスにファイルをアップロードする。
     final FirebaseStorage storage = FirebaseStorage.instance;
     try {
-      // //1,2 storageでのファイルの保存場所を指定し、ファイルをアップロード。
       //uidでランダムパスを作り、storageに保存。
       final auth.User? user = auth.FirebaseAuth.instance.currentUser;
       final String randomPass =
           user!.uid + '_' + DateTime.now().millisecondsSinceEpoch.toString();
       final String fileName = 'UL/$randomPass.png';
-      // Upload the file to Firebase Storage
+      //storageに、fileNameで場所特定し、fileを保存する。
       final snapshot = await storage.ref(fileName).putFile(file);
-
-      //3ダウンロードURLを取得する
+      //ダウンロードURLを取得する
       final String downloadUrl = await snapshot.ref.getDownloadURL();
-
       ////後半（cloudstoreにファイルのURLを保存)////
       // Firestoreに画像のダウンロードURLを保存する
       final CollectionReference collection =
@@ -71,8 +65,6 @@ class _UploadScreenState extends State<UploadScreen> {
             children: [
               if (_text != null) _text!,
             ],
-
-            // _text?,
           ),
         ),
         floatingActionButton:

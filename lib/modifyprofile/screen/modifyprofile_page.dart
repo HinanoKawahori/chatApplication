@@ -201,7 +201,7 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                 },
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.grey)),
-                child: const Text('画像アップロードページへ移動'),
+                child: const Text('アイコン変更ページへ移動'),
               ),
             ),
           ],

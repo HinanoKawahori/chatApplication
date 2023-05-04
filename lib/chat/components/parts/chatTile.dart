@@ -20,23 +20,19 @@ class ChatTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      //TODO エラーが出た原因。
-      //expandedがcirclephotoにまで届いていなかった？？
-
-      //child: Row(children: [
-      child: Card(
-        child: ListTile(
-          leading: CirclePhoto(
-            imageUrl: imageUrl,
-            //TODO radiusでサイズを指定しないとエラーになる。
-            radius: 30,
-          ),
-          title: Text(postText), // Display the task name
-          subtitle: Text(userName), // Display the user name as subtitle
+    // return Expanded(
+    //TODO エラーが出た原因。
+    return Card(
+      child: ListTile(
+        leading: CirclePhoto(
+          imageUrl: imageUrl,
+          //TODO radiusでサイズを指定しないとエラーになる。
+          radius: 30,
         ),
+        title: Text(postText), // Display the task name
+        subtitle: Text(userName), // Display the user name as subtitle
       ),
-      // ]),
     );
+    // );
   }
 }
