@@ -43,7 +43,6 @@ class MyApp extends StatelessWidget {
 }
 
 final postsReference = FirebaseFirestore.instance.collection('posts');
-//TODO converterを使った場合。
 // final postsReference =
 //     FirebaseFirestore.instance.collection('posts').withConverter<Post>(
 //   // <> ここに変換したい型名をいれます。今回は Post です。

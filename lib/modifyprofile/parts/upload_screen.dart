@@ -21,35 +21,36 @@ class _UploadScreenState extends State<UploadScreen> {
 
   // アップロード処理
   Future<void> _upload() async {
-    // imagePickerで画像を選択する
+    ////前半（画像ファイルの生成)////
     final pickerFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickerFile == null) {
       return;
     }
-    //storageに保存の定義
-    io.File file = io.File(pickerFile.path); //fileのパスを取得
-    print(file);
+    io.File file = io.File(pickerFile.path);
+    ////前半（storageに画像ファイルを保存)////
+    //2、storageパスにファイルをアップロードする。
     final FirebaseStorage storage = FirebaseStorage.instance;
     try {
-      //TODO　１、ファイルをFirebase Storageに保存する。
-      final snapshot = //ref(保存場所)、putFile(ファイル実物)
-          await storage.ref("UL/upload-pic.png").putFile(file);
-      //2ダウンロードURLを取得する
-      final String downloadUrl = await snapshot.ref.getDownloadURL();
-      // Firestoreに画像のダウンロードURLを保存する
+      // //1,2 storageでのファイルの保存場所を指定し、ファイルをアップロード。
+      //uidでランダムパスを作り、storageに保存。
       final auth.User? user = auth.FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        return;
-      }
+      final String randomPass =
+          user!.uid + '_' + DateTime.now().millisecondsSinceEpoch.toString();
+      final String fileName = 'UL/$randomPass.png';
+      // Upload the file to Firebase Storage
+      final snapshot = await storage.ref(fileName).putFile(file);
+
+      //3ダウンロードURLを取得する
+      final String downloadUrl = await snapshot.ref.getDownloadURL();
+
+      ////後半（cloudstoreにファイルのURLを保存)////
+      // Firestoreに画像のダウンロードURLを保存する
       final CollectionReference collection =
           FirebaseFirestore.instance.collection('users');
-      final DocumentReference doc = collection.doc(user.uid);
+      final DocumentReference doc = collection.doc(user!.uid);
       await doc.set({'imageUrl': downloadUrl}, SetOptions(merge: true));
-
-      await storage.ref("UL/upload-pic.png").putFile(file); //保存するフォルダ
       setState(() {
-        _img = null;
         _text = const Text("UploadDone");
       });
     } catch (e) {
@@ -68,7 +69,6 @@ class _UploadScreenState extends State<UploadScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             // ダウンロードしたイメージとテキストを表示
             children: [
-              if (_img != null) _img!,
               if (_text != null) _text!,
             ],
 
