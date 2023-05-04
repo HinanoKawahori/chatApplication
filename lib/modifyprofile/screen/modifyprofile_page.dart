@@ -1,3 +1,4 @@
+import 'package:chatapplication/modifyprofile/parts/upload_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -184,6 +185,23 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.grey)),
                 child: const Text('名前変更'),
+              ),
+            ),
+
+            //画像アップロード
+            Container(
+              margin: const EdgeInsets.all(10),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UploadScreen(),
+                      ));
+                },
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.grey)),
+                child: const Text('画像アップロードページへ移動'),
               ),
             ),
           ],

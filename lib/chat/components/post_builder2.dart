@@ -27,11 +27,11 @@ class _PostBuilder2State extends State<PostBuilder2> {
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
           } else {
-            //List<QuerySnapshot<Map<String, dynamic>>> docs = snapshot.data?.docs ?? [];
+            //asyncsnapshotをdataでquerysnapshotに戻す。その後、querysnapshotでリストにする。
             List docs = snapshot.data?.docs ?? [];
 
             return ListView(
-              //Listdocsから、docを一つずつとる。
+              //docsListから、docを一つずつとる。
               children: docs.map((doc) {
                 //QDS（doc)を使える形にする。
                 Map<String, dynamic> postMapData = doc.data();
@@ -58,12 +58,20 @@ class _PostBuilder2State extends State<PostBuilder2> {
                         //Map<String, dynamic> userMapData = doc.data();
                         User userData = User.fromJson(userMapData);
                         String userName = userData.userName;
+                        String imageUrl = userData.imageUrl;
 
                         //追加したい情報!!!!!!
-                        return ChatTile(postText: postText, userName: userName);
+                        return ChatTile(
+                          postText: postText,
+                          userName: userName,
+                          imageUrl: imageUrl,
+                        );
                       } else {
                         return ChatTile(
-                            postText: postText, userName: 'User not found');
+                          postText: postText,
+                          userName: 'User not found',
+                          imageUrl: '',
+                        );
                       }
                     } else if (snapshot.hasError) {
                       return Card(

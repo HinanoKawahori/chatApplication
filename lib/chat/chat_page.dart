@@ -1,6 +1,6 @@
 import 'package:chatapplication/chat/components/post_builder.dart';
 import 'package:chatapplication/chat/components/post_builder2.dart';
-import 'package:chatapplication/modifyprofile_page.dart';
+import 'package:chatapplication/modifyprofile/screen/modifyprofile_page.dart';
 import 'package:chatapplication/data_models/post/post.dart';
 import 'package:chatapplication/sign_in_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,7 +20,6 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   //validation
   final _formKey = GlobalKey<FormState>();
-
   final postController = TextEditingController();
 
   @override
@@ -68,10 +67,11 @@ class _ChatPageState extends State<ChatPage> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            //child1, streambuilder
+            // child1, streambuilder
             Expanded(
               child: PostBuilder2(),
             ),
+            // PostBuilder2(),
 
             Form(
               key: _formKey,
