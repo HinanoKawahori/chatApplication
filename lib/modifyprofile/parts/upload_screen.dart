@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UploadScreen extends StatefulWidget {
   @override
@@ -43,7 +44,11 @@ class _UploadScreenState extends State<UploadScreen> {
       final CollectionReference collection =
           FirebaseFirestore.instance.collection('users');
       final DocumentReference doc = collection.doc(user!.uid);
-      await doc.set({'imageUrl': downloadUrl}, SetOptions(merge: true));
+      // await doc.set({'imageUrl': downloadUrl}, SetOptions(merge: true));
+      await doc.update({
+        'imageUrl': downloadUrl,
+      });
+
       setState(() {
         _text = const Text("UploadDone");
       });

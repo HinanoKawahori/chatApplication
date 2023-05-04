@@ -64,20 +64,9 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
     //まず、データがあるか確認する。
     final docRef = FirebaseFirestore.instance.collection('users').doc(docId);
     final docSnapshot = await docRef.get();
-    //ある時は更新、ない時はつくる。
-    if (docSnapshot.exists) {
-      await docRef.update({
-        'imageUrl': '',
-        'userName': newName,
-        'userId': docId,
-      });
-    } else {
-      await docRef.set({
-        'imageUrl': '',
-        'userName': newName,
-        'userId': docId,
-      });
-    }
+    await docRef.update({
+      'userName': newName,
+    });
   }
 
   @override

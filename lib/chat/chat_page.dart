@@ -54,15 +54,6 @@ class _ChatPageState extends State<ChatPage> {
           ),
         ],
       ),
-      //TODO floatingactionbutton
-      floatingActionButton: FloatingActionButton.extended(
-        label: Text('プロフィール変更'),
-        icon: Icon(Icons.navigate_next),
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => ModifyProfilePage()));
-        },
-      ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(

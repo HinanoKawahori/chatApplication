@@ -1,6 +1,7 @@
 import 'package:chatapplication/chat/chat_page.dart';
 import 'package:chatapplication/data_models/user/user.dart';
 import 'package:chatapplication/forgetpassword.dart';
+import 'package:chatapplication/homescreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
@@ -72,7 +73,7 @@ class _SignInPageState extends State<SignInPage> {
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) {
-            return const ChatPage();
+            return HomeScreen();
           }),
           (route) => false,
         );
